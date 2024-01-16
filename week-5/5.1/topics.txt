@@ -1,0 +1,4 @@
+React
+    State-whatever is dynamic in your website
+    Components - how a DOM element should render given a state 
+    Re-Rendering

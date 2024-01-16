@@ -1,0 +1,8 @@
+1. fetch API
+2. Authentication 
+    a. Hashing
+    b. Encryption
+    c. JSON web tokens
+    d. Local Storage
+3.Databases
+    a. MongoDB
