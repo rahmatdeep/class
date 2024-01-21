@@ -1,16 +1,15 @@
 const express = require("express");
-const cors = requrie("cors");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const mainRouter = require("./routes/index")
+const mainRouter = require("./routes/index");
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
+app.use("/api/v1", mainRouter);
 
-app.use("/api/v1", mainRouter)
-
-app.listen(3000, ()=>{
-    console.log(`listening on Port 3000`);
-})
+app.listen(3000, () => {
+  console.log(`listening on Port 3000`);
+});

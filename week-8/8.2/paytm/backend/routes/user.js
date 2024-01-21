@@ -14,7 +14,7 @@ const signupSchema = zod.object({
 });
 
 router.post("/signup", async (req, res) => {
-  const { success } = signupSchema.safeParse(body);
+  const { success } = signupSchema.safeParse(req.body);
   if (!success) {
     return res.status(411).json({
       message: "Email already taken/ Incorrect inputs",
@@ -88,7 +88,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-const updateSchema = zod.Schema({
+const updateSchema = zod.object({
   password: zod.string().optional(),
   firstName: zod.string().optional(),
   lastName: zod.string().optional(),
@@ -103,9 +103,9 @@ router.put("/", authMiddleware, async (req, res) => {
   }
 
   const updatedFields = Object.keys(req.body);
-  if(updatedFields.length === 0) {
+  if (updatedFields.length === 0) {
     return res.status(411).json({
-        message: "No fields provided for update",
+      message: "No fields provided for update",
     });
   }
 
