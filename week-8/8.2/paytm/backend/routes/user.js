@@ -2,9 +2,11 @@ const express = require("express");
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = require("../config");
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const { authMiddleware } = require("../middleware");
 const router = express.Router();
+
+//SIGN UP
 
 const signupSchema = zod.object({
   username: zod.string().email(),
@@ -38,9 +40,16 @@ router.post("/signup", async (req, res) => {
     lastName: req.body.lastName,
   });
 
+  const userId = user._id;
+
+  await Account.create({
+    userId,
+    balance: 1 + Math.random() * 10000,
+  });
+
   const token = jwt.sign(
     {
-      userId: user._id,
+      userId,
     },
     JWT_SECRET
   );
@@ -50,6 +59,8 @@ router.post("/signup", async (req, res) => {
     token: token,
   });
 });
+
+//SIGNIN
 
 const singinSchema = zod.object({
   username: zod.string(),
@@ -88,6 +99,8 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+//UPDATE
+
 const updateSchema = zod.object({
   password: zod.string().optional(),
   firstName: zod.string().optional(),
@@ -116,8 +129,16 @@ router.put("/", authMiddleware, async (req, res) => {
   });
 });
 
+//SEARCH USERS
+
 router.get("/bulk", authMiddleware, async (req, res) => {
   const filter = req.query.filter || "";
+
+  if (filter === "") {
+    return res.json({
+      message: "Filter Empty",
+    });
+  }
 
   const users = await User.find({
     $or: [
