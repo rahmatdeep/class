@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
-    return Response.json({ username: "harkirat", email: "harkirat@gmail.com" })
+    return Response.json({ username: "rahmat", email: "rahmatdeep@gmail.com" })
   }
 
 
