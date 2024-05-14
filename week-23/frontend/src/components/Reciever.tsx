@@ -52,7 +52,7 @@ export const Receiver = () => {
 
   return (
     <>
-      <div>Reciever</div>
+      <div>Receiver</div>
     </>
   );
 };

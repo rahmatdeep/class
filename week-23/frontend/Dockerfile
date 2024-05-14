@@ -1,27 +1,15 @@
-# Use an official Node runtime as a parent image
-FROM node:20 as build
-
-# Set the working directory in the container
+# Stage 1: Build the application
+FROM node:17-alpine as builder
 WORKDIR /app
-
-# Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Bundle app source inside Docker image
 COPY . .
-
-# Build static assets
 RUN npm run build
 
-# Use nginx to serve the React app
-FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Stage 2: Serve the built application with Nginx
+FROM nginx:1.19.0
+COPY nginx.conf /etc/nginx/nginx.conf
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/dist .
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
