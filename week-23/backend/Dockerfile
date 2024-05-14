@@ -1,26 +1,25 @@
-# Use an official Node runtime as a parent image
-FROM node:20
+#Build stage
+FROM node:20-alpine AS build
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock)
-COPY package*.json ./
+COPY package*.json .
 
-# Install dependencies including devDependencies
 RUN npm install
 
-# If TypeScript is not in the dependencies, install it globally
-RUN npm install -g typescript
-
-# Copy the rest of your backend's source code
 COPY . .
 
-# Build the project (compile TypeScript)
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 8080
+#Production stage
+FROM node:20-alpine AS production
 
-# Command to run your app using the compiled JavaScript
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm ci --only=production
+
+COPY --from=build /app/dist ./dist
+
 CMD ["node", "dist/index.js"]
